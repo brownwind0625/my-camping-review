@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>나의 캠핑장 리뷰</title>
+<style>
+:root{--bg:#f6f3ec;--card:#fffdf8;--ink:#2b2a26;--mute:#7a766b;--line:#e4ded0;--acc:#2f6b4f;--acc-ink:#fff;--star:#e0a526;--danger:#b3412f;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1b1d1a;--card:#242723;--ink:#ece8dc;--mute:#9b978a;--line:#363a33;--acc:#6fbf94;--acc-ink:#12251b;--star:#f0b93a;--danger:#e27a68}}
+:root[data-theme="dark"]{--bg:#1b1d1a;--card:#242723;--ink:#ece8dc;--mute:#9b978a;--line:#363a33;--acc:#6fbf94;--acc-ink:#12251b;--star:#f0b93a;--danger:#e27a68}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,"Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",sans-serif;line-height:1.55}
+.wrap{max-width:720px;margin:0 auto;padding:20px 16px 48px}
+h1{font-size:1.6rem;margin:8px 0 2px}
+.sub{color:var(--mute);margin:0 0 16px}
+.tabs{display:flex;gap:6px;margin-bottom:16px;border-bottom:1px solid var(--line)}
+.tabs button{background:none;border:0;border-bottom:3px solid transparent;padding:8px 12px;font:inherit;color:var(--mute);cursor:pointer}
+.tabs button.on{color:var(--acc);border-color:var(--acc);font-weight:600}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:14px}
+label{display:block;font-size:.85rem;color:var(--mute);margin:12px 0 4px}
+input,textarea,select{width:100%;font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+textarea{min-height:96px;resize:vertical}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media (max-width:480px){.row{grid-template-columns:1fr}}
+.ck{display:inline-block;margin:4px 6px 0 0;padding:5px 12px;border:1px solid var(--line);border-radius:99px;color:var(--ink);font-size:.88rem;cursor:pointer;background:var(--bg)}
+.ck input{position:absolute;opacity:0;width:0;height:0}
+.ck.on{background:var(--acc);border-color:var(--acc);color:var(--acc-ink)}
+.fg{font-size:.8rem;color:var(--mute);margin:12px 0 2px}
+.stars{display:inline-flex;gap:2px}
+.stars button{background:none;border:0;padding:2px;font-size:1.5rem;line-height:1;color:var(--line);cursor:pointer}
+.stars button.on{color:var(--star)}
+.rate{display:flex;justify-content:space-between;align-items:center;padding:4px 0}
+.btn{background:var(--acc);color:var(--acc-ink);border:0;border-radius:10px;padding:11px 18px;font:inherit;font-weight:600;cursor:pointer;margin-top:16px}
+.btn.ghost{background:none;color:var(--mute);border:1px solid var(--line);margin:0;padding:6px 12px;font-weight:400;font-size:.85rem}
+.btn:disabled{opacity:.5}
+.acts{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.acts a{text-decoration:none}
+.bar{display:flex;gap:10px;align-items:center;margin:20px 0 10px}
+.bar h2{font-size:1.1rem;margin:0;flex:1}
+.bar select{width:auto}
+.filters{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin-bottom:10px}
+.rv h3{margin:0;font-size:1.05rem}
+.meta{color:var(--mute);font-size:.85rem}
+.top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.score{color:var(--star);white-space:nowrap}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.chip{font-size:.78rem;border:1px solid var(--line);border-radius:99px;padding:2px 9px;color:var(--mute)}
+.chip.a{border-color:var(--acc);color:var(--acc)}
+.rv p{margin:8px 0 0;white-space:pre-wrap;word-break:break-word}
+.empty{text-align:center;color:var(--mute);padding:28px 8px}
+.msg{font-size:.85rem;color:var(--danger);margin-top:10px;min-height:1em}
+.note{font-size:.8rem;color:var(--mute);margin-top:6px}
+.previews,.photos{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.pv{position:relative}.pv img{width:84px;height:84px;object-fit:cover;border-radius:8px;display:block}
+.pv button{position:absolute;top:2px;right:2px;border:0;border-radius:50%;width:22px;height:22px;background:rgba(0,0,0,.6);color:#fff;cursor:pointer;line-height:1}
+.photos img{width:calc(50% - 4px);max-height:220px;object-fit:cover;border-radius:10px;cursor:zoom-in}
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.stat{margin:0;text-align:center}.big{font-size:1.5rem;font-weight:700;color:var(--acc)}
+.hb{display:flex;align-items:center;gap:8px;margin:6px 0;font-size:.9rem}
+.hb span:first-child{width:90px;flex:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hb i{display:block;height:10px;border-radius:5px;background:var(--acc)}
+.sec{font-size:1rem;margin:20px 0 8px}
+.ex{display:flex;gap:6px;margin-top:6px;flex-wrap:wrap}
+.ex select{flex:1 1 100px;width:auto}.ex input{flex:2 1 90px;width:auto}.ex .amt{flex:1 1 90px}.ex button{flex:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>⛺ 나의 캠핑장 리뷰</h1>
+  <p class="sub">다녀온 캠핑장의 기억을 남겨보세요.</p>
+  <nav class="tabs"><button data-t="r" class="on">리뷰</button><button data-t="w">가고 싶은 곳</button><button data-t="s">요약</button></nav>
+
+  <section id="tr">
+    <div class="card" id="formcard">
+      <h2 id="ftitle" style="font-size:1.05rem;margin:0">새 리뷰</h2>
+      <label for="name">캠핑장 이름</label>
+      <input id="name" maxlength="60" placeholder="예) 가평 ○○ 오토캠핑장">
+      <div class="row">
+        <div><label for="place">지역</label><input id="place" maxlength="40" placeholder="예) 경기 가평"></div>
+        <div><label for="date">체크인</label><input id="date" type="date"></div>
+        <div><label for="date2">체크아웃 (당일치기면 비움)</label><input id="date2" type="date"></div>
+        <div><label for="site">사이트 번호</label><input id="site" maxlength="20" placeholder="예) B-12"></div>
+        <div><label for="price">1박 요금 (원)</label><input id="price" type="number" min="0" inputmode="numeric"></div>
+      </div>
+      <label for="who">동행</label>
+      <select id="who"><option value="">선택 안 함</option><option>가족</option><option>친구</option><option>연인</option><option>혼자</option><option>반려견과</option></select>
+      <label for="mapurl">구글 지도 링크 (선택)</label>
+      <input id="mapurl" maxlength="300" placeholder="비워두면 캠핑장 이름·지역으로 자동 검색해요">
+      <label>평점</label>
+      <div id="rates"></div>
+      <label>사이트·시설 정보 (해당되는 것을 선택)</label>
+      <div id="fac"></div>
+      <label>지출 내역 (숙박비 외)</label>
+      <div id="exps"></div>
+      <button type="button" class="btn ghost" id="addexp" style="margin-top:6px">+ 지출 추가</button>
+      <div class="meta" id="expsum" style="margin-top:8px"></div>
+      <label for="again">재방문 의사</label>
+      <select id="again"><option value="">선택 안 함</option><option value="yes">또 가고 싶다</option><option value="meh">한 번이면 충분</option></select>
+      <label for="photos">사진 (최대 4장)</label>
+      <input id="photos" type="file" accept="image/*" multiple>
+      <div class="previews" id="previews"></div>
+      <label for="tags">태그 (쉼표로 구분)</label>
+      <input id="tags"
