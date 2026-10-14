@@ -66,6 +66,9 @@ textarea{min-height:96px;resize:vertical}
 .ex{display:flex;gap:6px;margin-top:6px;flex-wrap:wrap}
 .ex select{flex:1 1 100px;width:auto}.ex input{flex:2 1 90px;width:auto}.ex .amt{flex:1 1 90px}.ex button{flex:none}
 </style>
+<!-- Firebase SDK 로드 -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 </head>
 <body>
 <div class="wrap">
@@ -140,6 +143,19 @@ textarea{min-height:96px;resize:vertical}
 </div>
 
 <script>
+// Firebase 설정 연동
+const firebaseConfig = {
+  apiKey: "AIzaSyC9VxcN2sGY2kfhipaWtQW3AY49HMy-8vc",
+  authDomain: "my-camping-db.firebaseapp.com",
+  projectId: "my-camping-db",
+  storageBucket: "my-camping-db.firebasestorage.app",
+  messagingSenderId: "868523029623",
+  appId: "1:868523029623:web:0a0f7d9944bca07e4f0272"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
 (function(){
 var CATS=[["overall","전체 만족도"],["clean","청결"],["facility","시설"],["nature","자연·경관"],["value","가성비"]];
 var GROUPS=[
@@ -271,19 +287,26 @@ function renderStats(){
 }
 function render(){renderList();renderWishes();renderStats()}
 
-function persist(){
-  var json=JSON.stringify({reviews:reviews,wishes:wishes});
-  localStorage.setItem("camping_reviews_data",json);
+// Firebase Firestore 영구 저장
+async function persist(){
+  await db.collection("camping").doc("main").set({
+    reviews: reviews,
+    wishes: wishes
+  });
 }
-function change(fn,msgId){
+
+async function change(fn, msgId){
+  var r0=reviews, w0=wishes;
   fn();
+  render();
   try{
-    persist();
-    render();
+    await persist();
     return true;
   }catch(e){
+    reviews=r0; wishes=w0;
     render();
-    $(msgId).textContent="용량이 가득 찼거나 저장하지 못했어요. 사진을 줄여보세요.";
+    console.error(e);
+    $(msgId).textContent="클라우드 저장 실패: Firestore 규칙 설정을 확인해주세요.";
     return false;
   }
 }
@@ -301,7 +324,7 @@ function startEdit(r){editId=r.id;fromWish=null;setForm(r);$("ftitle").textConte
 function cancelEdit(){editId=null;fromWish=null;setForm({date:today()});$("ftitle").textContent="새 리뷰";$("save").textContent="리뷰 남기기";$("cancel").hidden=true}
 function wishToReview(w){cancelEdit();fromWish=w.id;$("name").value=w.name;$("place").value=w.place||"";$("mapurl").value=w.map||"";toForm()}
 
-function save(){
+async function save(){
   var msg=$("msg");msg.textContent="";
   var name=$("name").value.trim();
   if(!name){msg.textContent="캠핑장 이름을 입력해주세요.";return}
@@ -315,16 +338,23 @@ function save(){
     tags:$("tags").value.split(",").map(function(t){return t.trim().replace(/^#/,"")}).filter(Boolean).slice(0,8),
     text:$("text").value.trim(),photos:pending.map(function(p){return p.data})};
   
-  var ok=change(function(){
+  $("save").disabled=true;
+  msg.textContent="클라우드 저장 중…";
+  var ok=await change(function(){
     reviews=old?reviews.map(function(x){return x.id===old.id?r:x}):reviews.concat([r]);
     if(fromWish)wishes=wishes.filter(function(w){return w.id!==fromWish})},"msg");
+  $("save").disabled=false;
   if(ok){cancelEdit()}
 }
-function addWish(){
+
+async function addWish(){
   var n=$("wname").value.trim(),m=$("wmsg");m.textContent="";
   if(!n){m.textContent="캠핑장 이름을 입력해주세요.";return}
   var w={id:"w"+Date.now(),name:n,place:$("wplace").value.trim(),map:$("wmap").value.trim(),memo:$("wmemo").value.trim()};
-  var ok=change(function(){wishes=wishes.concat([w])},"wmsg");
+  $("wadd").disabled=true;
+  m.textContent="클라우드 저장 중…";
+  var ok=await change(function(){wishes=wishes.concat([w])},"wmsg");
+  $("wadd").disabled=false;
   if(ok){$("wname").value="";$("wplace").value="";$("wmap").value="";$("wmemo").value=""}
 }
 
@@ -371,14 +401,21 @@ $("addexp").onclick=function(){exps.push({cat:EXC[0],memo:"",amt:""});renderExps
 ["sort","fp","ft","fs","fa","ff"].forEach(function(id){$(id).onchange=renderList});$("q").oninput=renderList;
 $("date").value=today();renderRates();renderExps();
 
-(function(){
-  try{
-    var raw=localStorage.getItem("camping_reviews_data");
-    if(raw){var d=JSON.parse(raw);reviews=d.reviews||[];wishes=d.wishes||[]}
-  }catch(e){}
-  buildFilters();render();
-  $("mode").textContent="💡 브라우저 로컬 저장소 모드 (현재 브라우저에 안전하게 보관됩니다)";
-})();
+// Firestore 실시간 동기화 리스너
+db.collection("camping").doc("main").onSnapshot(function(doc){
+  if(doc.exists){
+    var d=doc.data();
+    reviews=d.reviews||[];
+    wishes=d.wishes||[];
+    buildFilters();
+    render();
+  }
+  $("mode").textContent="☁️ Firebase 클라우드 연동 완료 (기기 간 자동 동기화)";
+}, function(err){
+  console.error(err);
+  $("mode").textContent="⚠️ 클라우드 연결 오류: Firestore 규칙 설정을 확인해주세요.";
+});
+
 })();
 </script>
 </body>
