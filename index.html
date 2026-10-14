@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>나의 캠핑장 리뷰</title>
+<style>
+:root{--bg:#f6f3ec;--card:#fffdf8;--ink:#2b2a26;--mute:#7a766b;--line:#e4ded0;--acc:#2f6b4f;--acc-ink:#fff;--star:#e0a526;--danger:#b3412f;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1b1d1a;--card:#242723;--ink:#ece8dc;--mute:#9b978a;--line:#363a33;--acc:#6fbf94;--acc-ink:#12251b;--star:#f0b93a;--danger:#e27a68}}
+:root[data-theme="dark"]{--bg:#1b1d1a;--card:#242723;--ink:#ece8dc;--mute:#9b978a;--line:#363a33;--acc:#6fbf94;--acc-ink:#12251b;--star:#f0b93a;--danger:#e27a68}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,"Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",sans-serif;line-height:1.55}
+.wrap{max-width:720px;margin:0 auto;padding:20px 16px 48px}
+h1{font-size:1.6rem;margin:8px 0 2px}
+.sub{color:var(--mute);margin:0 0 16px}
+.tabs{display:flex;gap:6px;margin-bottom:16px;border-bottom:1px solid var(--line)}
+.tabs button{background:none;border:0;border-bottom:3px solid transparent;padding:8px 12px;font:inherit;color:var(--mute);cursor:pointer}
+.tabs button.on{color:var(--acc);border-color:var(--acc);font-weight:600}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:14px}
+label{display:block;font-size:.85rem;color:var(--mute);margin:12px 0 4px}
+input,textarea,select{width:100%;font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+textarea{min-height:96px;resize:vertical}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media (max-width:480px){.row{grid-template-columns:1fr}}
+.ck{display:inline-block;margin:4px 6px 0 0;padding:5px 12px;border:1px solid var(--line);border-radius:99px;color:var(--ink);font-size:.88rem;cursor:pointer;background:var(--bg)}
+.ck input{position:absolute;opacity:0;width:0;height:0}
+.ck.on{background:var(--acc);border-color:var(--acc);color:var(--acc-ink)}
+.fg{font-size:.8rem;color:var(--mute);margin:12px 0 2px}
+.stars{display:inline-flex;gap:2px}
+.stars button{background:none;border:0;padding:2px;font-size:1.5rem;line-height:1;color:var(--line);cursor:pointer}
+.stars button.on{color:var(--star)}
+.rate{display:flex;justify-content:space-between;align-items:center;padding:4px 0}
+.btn{background:var(--acc);color:var(--acc-ink);border:0;border-radius:10px;padding:11px 18px;font:inherit;font-weight:600;cursor:pointer;margin-top:16px}
+.btn.ghost{background:none;color:var(--mute);border:1px solid var(--line);margin:0;padding:6px 12px;font-weight:400;font-size:.85rem}
+.btn:disabled{opacity:.5}
+.acts{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.acts a{text-decoration:none}
+.bar{display:flex;gap:10px;align-items:center;margin:20px 0 10px}
+.bar h2{font-size:1.1rem;margin:0;flex:1}
+.bar select{width:auto}
+.filters{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin-bottom:10px}
+.rv h3{margin:0;font-size:1.05rem}
+.meta{color:var(--mute);font-size:.85rem}
+.top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.score{color:var(--star);white-space:nowrap}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.chip{font-size:.78rem;border:1px solid var(--line);border-radius:99px;padding:2px 9px;color:var(--mute)}
+.chip.a{border-color:var(--acc);color:var(--acc)}
+.rv p{margin:8px 0 0;white-space:pre-wrap;word-break:break-word}
+.empty{text-align:center;color:var(--mute);padding:28px 8px}
+.msg{font-size:.85rem;color:var(--danger);margin-top:10px;min-height:1em}
+.note{font-size:.8rem;color:var(--mute);margin-top:6px}
+.previews,.photos{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.pv{position:relative}.pv img{width:84px;height:84px;object-fit:cover;border-radius:8px;display:block}
+.pv button{position:absolute;top:2px;right:2px;border:0;border-radius:50%;width:22px;height:22px;background:rgba(0,0,0,.6);color:#fff;cursor:pointer;line-height:1}
+.photos img{width:calc(50% - 4px);max-height:220px;object-fit:cover;border-radius:10px;cursor:zoom-in}
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.stat{margin:0;text-align:center}.big{font-size:1.5rem;font-weight:700;color:var(--acc)}
+.hb{display:flex;align-items:center;gap:8px;margin:6px 0;font-size:.9rem}
+.hb span:first-child{width:90px;flex:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hb i{display:block;height:10px;border-radius:5px;background:var(--acc)}
+.sec{font-size:1rem;margin:20px 0 8px}
+.ex{display:flex;gap:6px;margin-top:6px;flex-wrap:wrap}
+.ex select{flex:1 1 100px;width:auto}.ex input{flex:2 1 90px;width:auto}.ex .amt{flex:1 1 90px}.ex button{flex:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>⛺ 나의 캠핑장 리뷰</h1>
+  <p class="sub">다녀온 캠핑장의 기억을 남겨보세요.</p>
+  <nav class="tabs"><button data-t="r" class="on">리뷰</button><button data-t="w">가고 싶은 곳</button><button data-t="s">요약</button></nav>
+
+  <section id="tr">
+    <div class="card" id="formcard">
+      <h2 id="ftitle" style="font-size:1.05rem;margin:0">새 리뷰</h2>
+      <label for="name">캠핑장 이름</label>
+      <input id="name" maxlength="60" placeholder="예) 가평 ○○ 오토캠핑장">
+      <div class="row">
+        <div><label for="place">지역</label><input id="place" maxlength="40" placeholder="예) 경기 가평"></div>
+        <div><label for="date">체크인</label><input id="date" type="date"></div>
+        <div><label for="date2">체크아웃 (당일치기면 비움)</label><input id="date2" type="date"></div>
+        <div><label for="site">사이트 번호</label><input id="site" maxlength="20" placeholder="예) B-12"></div>
+        <div><label for="price">1박 요금 (원)</label><input id="price" type="number" min="0" inputmode="numeric"></div>
+      </div>
+      <label for="who">동행</label>
+      <select id="who"><option value="">선택 안 함</option><option>가족</option><option>친구</option><option>연인</option><option>혼자</option><option>반려견과</option></select>
+      <label for="mapurl">구글 지도 링크 (선택)</label>
+      <input id="mapurl" maxlength="300" placeholder="비워두면 캠핑장 이름·지역으로 자동 검색해요">
+      <label>평점</label>
+      <div id="rates"></div>
+      <label>사이트·시설 정보 (해당되는 것을 선택)</label>
+      <div id="fac"></div>
+      <label>지출 내역 (숙박비 외)</label>
+      <div id="exps"></div>
+      <button type="button" class="btn ghost" id="addexp" style="margin-top:6px">+ 지출 추가</button>
+      <div class="meta" id="expsum" style="margin-top:8px"></div>
+      <label for="again">재방문 의사</label>
+      <select id="again"><option value="">선택 안 함</option><option value="yes">또 가고 싶다</option><option value="meh">한 번이면 충분</option></select>
+      <label for="photos">사진 (최대 4장)</label>
+      <input id="photos" type="file" accept="image/*" multiple>
+      <div class="previews" id="previews"></div>
+      <label for="tags">태그 (쉼표로 구분)</label>
+      <input id="tags" maxlength="60" placeholder="예) 계곡, 반려견동반, 조용함">
+      <label for="text">후기</label>
+      <textarea id="text" maxlength="1500" placeholder="좋았던 점, 아쉬웠던 점, 다음에 간다면 팁…"></textarea>
+      <div class="acts"><button class="btn" id="save" style="margin:0">리뷰 남기기</button><button class="btn ghost" id="cancel" hidden>수정 취소</button></div>
+      <div class="msg" id="msg"></div>
+    </div>
+    <div class="bar">
+      <h2 id="count">리뷰</h2>
+      <select id="sort" aria-label="정렬"><option value="date">방문일 최신순</option><option value="score">평점 높은순</option></select>
+    </div>
+    <div class="filters">
+      <select id="fp" aria-label="지역"></select><select id="ft" aria-label="태그"></select><select id="fs" aria-label="별점"></select><select id="fa" aria-label="재방문 의사"></select><select id="ff" aria-label="시설"></select>
+    </div>
+    <input id="q" type="search" placeholder="캠핑장 이름 검색" aria-label="캠핑장 이름 검색" style="margin-bottom:12px">
+    <div id="list"></div>
+  </section>
+
+  <section id="tw" hidden>
+    <div class="card" id="wform">
+      <h2 style="font-size:1.05rem;margin:0">가고 싶은 캠핑장 추가</h2>
+      <label for="wname">캠핑장 이름</label><input id="wname" maxlength="60">
+      <div class="row">
+        <div><label for="wplace">지역</label><input id="wplace" maxlength="40"></div>
+        <div><label for="wmap">구글 지도 링크 (선택)</label><input id="wmap" maxlength="300"></div>
+      </div>
+      <label for="wmemo">메모</label><input id="wmemo" maxlength="200" placeholder="가고 싶은 이유, 예약 팁 등">
+      <button class="btn" id="wadd">추가</button>
+      <div class="msg" id="wmsg"></div>
+    </div>
+    <div id="wlist"></div>
+  </section>
+
+  <section id="ts" hidden></section>
+  <div class="note" id="mode"></div>
+</div>
+
+<script>
+(function(){
+var CATS=[["overall","전체 만족도"],["clean","청결"],["facility","시설"],["nature","자연·경관"],["value","가성비"]];
+var GROUPS=[
+["사이트 환경",[["env_crush","파쇄석"],["env_deck","데크"],["env_grass","잔디"],["env_masato","마사토"],["env_sand","모래"],["env_gravel","자갈"],["env_mix","혼합"],["env_etc","기타 바닥"]]],
+["주변·레저",[["valley","계곡"],["sea","바다"],["flat","갯벌"],["river","강·호수"],["forest","숲·산"],["rec","휴양림"],["hike","등산"],["water","수상레저"],["fish","낙시"]]],
+["시설",[["shower","샤워실"],["toilet","개별 화장실"],["pshower","개별 샤워실"],["pool","수영장"],["hpool","온수수영장"],["play","놀이시설"],["tramp","트램펄린"],["sauna","찜질방"],["cafe","카페/매점"],["bbq","바베큐장"],["ev","전기차충전소"],["tarp","타프"],["ftarp","풀타프"],["elec","전기"],["hot","온수"],["sink","개수대"],["wifi","와이파이"],["pet","반려견"]]],
+["주차형태",[["park","텐트 옆 주차"]]],
+["진입 가능 형태",[["trailer","트레일러 진입"],["caravan","카라반 진입"]]],
+["체험활동",[["exp","체험활동"],["farm","농장체험"],["animal","동물체험"]]]];
+var FAC=[].concat.apply([],GROUPS.map(function(g){return g[1]}));
+var AG={yes:"또 가고 싶다",meh:"한 번이면 충분"};
+var EXC=["식비","장보기","장작·연료","교통","장비·용품","기타"];
+var exps=[];
+var vals={},reviews=[],wishes=[],canEdit=true,pending=[],editId=null,fromWish=null,tab="r";
+var $=function(id){return document.getElementById(id)};
+var el=function(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e};
+
+function zero(){vals={overall:0,clean:0,facility:0,nature:0,value:0}}zero();
+function today(){return new Date(Date.now()-new Date().getTimezoneOffset()*6e4).toISOString().slice(0,10)}
+function season(s){var m=+(s||"").slice(5,7);return !m?"":m>=3&&m<=5?"봄":m>=6&&m<=8?"여름":m>=9&&m<=11?"가을":"겨울"}
+function stars(n){return "★".repeat(n)+"☆".repeat(5-n)}
+function nights(r){if(!r.date||!r.date2)return 0;var n=Math.round((Date.parse(r.date2)-Date.parse(r.date))/864e5);return n>0?n:0}
+function won(n){return Number(n||0).toLocaleString("ko-KR")+"원"}
+function range(r){if(!r.date)return "";var n=nights(r),s=r.date+(n?" ~ "+(r.date2.slice(0,4)===r.date.slice(0,4)?r.date2.slice(5):r.date2)+" ("+n+"박 "+(n+1)+"일)":""),se=season(r.date);return s+(se?" · "+se:"")}
+function lodging(r){return (r.price===""||r.price==null)?0:Number(r.price)*(nights(r)||1)}
+function spent(r){return (r.exps||[]).reduce(function(a,x){return a+(Number(x.amt)||0)},0)}
+function mapLink(x){
+  var ok=/^https:\/\/(www\.)?(google\.[a-z.]+\/maps|maps\.google\.[a-z.]+|maps\.app\.goo\.gl|goo\.gl\/maps)/i.test(x.map||"");
+  var a=el("a","btn ghost","📍 구글 지도에서 보기");
+  a.href=ok?x.map:"https://www.google.com/maps/search/?api=1&query="+encodeURIComponent((x.name+" "+(x.place||"")).trim());
+  a.target="_blank";a.rel="noopener noreferrer";return a}
+function fill(id,first,arr){var s=$(id),v=s.value;s.textContent="";var o=el("option",null,first);o.value="";s.appendChild(o);
+  arr.forEach(function(a){var o=el("option",null,a[1]);o.value=a[0];s.appendChild(o)});
+  s.value=arr.some(function(a){return a[0]===v})?v:""}
+function buildFilters(){
+  var pl=[],tg=[];
+  reviews.forEach(function(r){if(r.place&&pl.indexOf(r.place)<0)pl.push(r.place);(r.tags||[]).forEach(function(t){if(tg.indexOf(t)<0)tg.push(t)})});
+  fill("fp","모든 지역",pl.sort().map(function(x){return[x,x]}));
+  fill("ft","모든 태그",tg.sort().map(function(x){return[x,"#"+x]}));
+  fill("fs","모든 별점",[["4","★4 이상"],["3","★3 이상"]]);
+  fill("fa","재방문 의사",[["yes",AG.yes],["meh",AG.meh]]);
+  var sf=$("ff"),fv=sf.value;sf.textContent="";var o0=el("option",null,"조건 전체");o0.value="";sf.appendChild(o0);
+  GROUPS.forEach(function(g){var og=el("optgroup");og.label=g[0];g[1].forEach(function(f){var o=el("option",null,f[1]);o.value=f[0];og.appendChild(o)});sf.appendChild(og)});sf.value=fv}
+
+function renderRates(){
+  var box=$("rates");box.textContent="";
+  CATS.forEach(function(c){
+    var row=el("div","rate"),st=el("span","stars");
+    for(var i=1;i<=5;i++){(function(i){
+      var b=el("button",vals[c[0]]>=i?"on":"","★");b.type="button";b.setAttribute("aria-label",c[1]+" "+i+"점");
+      b.onclick=function(){vals[c[0]]=(vals[c[0]]===i?0:i);renderRates()};st.appendChild(b)})(i)}
+    row.appendChild(el("span",null,c[1]));row.appendChild(st);box.appendChild(row)});
+}
+
+function reviewCard(r){
+  var c=el("div","card rv"),top=el("div","top"),l=el("div");
+  l.appendChild(el("h3",null,r.name));
+  var hasP=r.price!==""&&r.price!=null;
+  l.appendChild(el("div","meta",[r.place,range(r),r.site&&"사이트 "+r.site,hasP&&Number(r.price).toLocaleString("ko-KR")+"원/박",r.who].filter(Boolean).join(" · ")));
+  top.appendChild(l);top.appendChild(el("div","score",stars(r.overall||0)));c.appendChild(top);
+  var sub=[];CATS.slice(1).forEach(function(k){if(r[k[0]])sub.push(k[1]+" "+r[k[0]])});
+  if(sub.length)c.appendChild(el("div","meta",sub.join("  ·  ")));
+  var lg=lodging(r),sp=spent(r);
+  if(lg||sp){var cb=el("div","meta","💰 합계 "+won(lg+sp)+(lg?" (숙박 "+won(lg)+(sp?" + 지출 "+won(sp):"")+")":" (지출 "+won(sp)+")"));cb.style.marginTop="6px";c.appendChild(cb);
+    if((r.exps||[]).length){var by={};r.exps.forEach(function(x){by[x.cat]=(by[x.cat]||0)+(Number(x.amt)||0)});
+      c.appendChild(el("div","meta",Object.keys(by).map(function(k){return k+" "+won(by[k])}).join(" · ")))}}
+  var ch=el("div","chips");
+  if(r.again)ch.appendChild(el("span","chip a","♥ "+AG[r.again]));
+  (r.fac||[]).forEach(function(k){FAC.forEach(function(f){if(f[0]===k)ch.appendChild(el("span","chip","✓ "+f[1]))})});
+  (r.tags||[]).forEach(function(t){ch.appendChild(el("span","chip","#"+t))});
+  if(ch.children.length)c.appendChild(ch);
+  if(r.text)c.appendChild(el("p",null,r.text));
+  if(r.photos&&r.photos.length){var g=el("div","photos");
+    r.photos.forEach(function(src){var im=el("img");im.src=src;im.alt=r.name+" 사진";
+      im.onclick=function(){var z=im.dataset.z!=="1";im.dataset.z=z?"1":"";im.style.width=z?"100%":"";im.style.maxHeight=z?"none":""};g.appendChild(im)});c.appendChild(g)}
+  var a=el("div","acts");a.appendChild(mapLink(r));
+  if(canEdit){var e=el("button","btn ghost","수정");e.onclick=function(){startEdit(r)};a.appendChild(e);
+    var d=el("button","btn ghost","삭제");d.onclick=function(){if(confirm("이 리뷰를 삭제할까요?"))change(function(){reviews=reviews.filter(function(x){return x.id!==r.id})},"msg")};a.appendChild(d)}
+  c.appendChild(a);return c}
+
+function renderList(){
+  var list=$("list");list.textContent="";
+  var s=$("sort").value,kw=$("q").value.trim().toLowerCase();
+  var fp=$("fp").value,ft=$("ft").value,fs=+$("fs").value,fa=$("fa").value,ff=$("ff").value;
+  var arr=reviews.filter(function(r){
+    return (!kw||(r.name||"").toLowerCase().indexOf(kw)>-1||(r.place||"").toLowerCase().indexOf(kw)>-1)
+      &&(!fp||r.place===fp)&&(!ft||(r.tags||[]).indexOf(ft)>-1)&&(!fs||r.overall>=fs)&&(!fa||r.again===fa)&&(!ff||(r.fac||[]).indexOf(ff)>-1)
+  }).sort(function(a,b){
+    if(s==="score"&&b.overall!==a.overall)return b.overall-a.overall;
+    return (b.date||"").localeCompare(a.date||"")||(b.created||0)-(a.created||0)});
+  var filt=kw||fp||ft||fs||fa||ff;
+  $("count").textContent=filt?"검색 결과 "+arr.length+"개 (전체 "+reviews.length+"개)":"남긴 리뷰 "+arr.length+"개";
+  if(!arr.length){list.appendChild(el("div","card empty",filt?"조건에 맞는 리뷰가 없어요.":"아직 남긴 리뷰가 없어요. 첫 리뷰를 남겨보세요!"));return}
+  arr.forEach(function(r){list.appendChild(reviewCard(r))});
+}
+
+function renderWishes(){
+  var box=$("wlist");box.textContent="";
+  if(!wishes.length){box.appendChild(el("div","card empty","가고 싶은 캠핑장을 추가해보세요."));return}
+  wishes.forEach(function(w){
+    var c=el("div","card rv");c.appendChild(el("h3",null,w.name));
+    if(w.place)c.appendChild(el("div","meta",w.place));
+    if(w.memo)c.appendChild(el("p",null,w.memo));
+    var a=el("div","acts");a.appendChild(mapLink(w));
+    if(canEdit){var b=el("button","btn ghost","다녀왔어요 · 리뷰 쓰기");b.onclick=function(){wishToReview(w)};a.appendChild(b);
+      var d=el("button","btn ghost","삭제");d.onclick=function(){if(confirm("목록에서 지울까요?"))change(function(){wishes=wishes.filter(function(x){return x.id!==w.id})},"wmsg")};a.appendChild(d)}
+    c.appendChild(a);box.appendChild(c)});
+}
+
+function renderStats(){
+  var s=$("ts");s.textContent="";
+  if(!reviews.length&&!wishes.length){s.appendChild(el("div","card empty","아직 통계를 낼 데이터가 없어요."));return}
+  var n=reviews.length,sum=0,ag=0,pl={},tot=0,cat={};
+  reviews.forEach(function(r){sum+=r.overall||0;if(r.again==="yes")ag++;if(r.place)pl[r.place]=(pl[r.place]||0)+1;
+    tot+=lodging(r)+spent(r);if(lodging(r))cat["숙박"]=(cat["숙박"]||0)+lodging(r);(r.exps||[]).forEach(function(x){cat[x.cat]=(cat[x.cat]||0)+(Number(x.amt)||0)})});
+  var g=el("div","stats");
+  [["총 방문",n+"회"],["평균 별점",n?"★ "+(sum/n).toFixed(1):"-"],["또 가고 싶은 곳",ag+"곳"],["가고 싶은 곳",wishes.length+"곳"],["총 지출",won(tot)],["1회 평균",n?won(Math.round(tot/n)):"-"]].forEach(function(x){
+    var b=el("div","card stat");b.appendChild(el("div","meta",x[0]));b.appendChild(el("div","big",x[1]));g.appendChild(b)});
+  s.appendChild(g);
+  var ks=Object.keys(pl).sort(function(a,b){return pl[b]-pl[a]}).slice(0,6);
+  if(ks.length){s.appendChild(el("h3","sec","지역별 방문"));var c=el("div","card");
+    ks.forEach(function(k){var r=el("div","hb");r.appendChild(el("span",null,k));var w=el("span");w.style.flex="1";var i=el("i");i.style.width=(pl[k]/pl[ks[0]]*100)+"%";w.appendChild(i);r.appendChild(w);r.appendChild(el("span",null,pl[k]+"회"));c.appendChild(r)});s.appendChild(c)}
+  var ck=Object.keys(cat).filter(function(k){return cat[k]>0}).sort(function(a,b){return cat[b]-cat[a]});
+  if(ck.length){s.appendChild(el("h3","sec","항목별 지출"));var cc=el("div","card");
+    ck.forEach(function(k){var r=el("div","hb");r.appendChild(el("span",null,k));var w=el("span");w.style.flex="1";var i=el("i");i.style.width=(cat[k]/cat[ck[0]]*100)+"%";w.appendChild(i);r.appendChild(w);r.appendChild(el("span",null,won(cat[k])));cc.appendChild(r)});s.appendChild(cc)}
+  var top=reviews.filter(function(r){return r.overall>0}).sort(function(a,b){return b.overall-a.overall}).slice(0,3);
+  if(top.length){s.appendChild(el("h3","sec","최고 평점 캠핑장"));var t=el("div","card");
+    top.forEach(function(r){var r2=el("div","hb");r2.appendChild(el("span",null,r.name));r2.lastChild.style.width="auto";r2.lastChild.style.flex="1";r2.appendChild(el("span","score",stars(r.overall)));t.appendChild(r2)});s.appendChild(t)}
+}
+function render(){renderList();renderWishes();renderStats()}
+
+function persist(){
+  var json=JSON.stringify({reviews:reviews,wishes:wishes});
+  localStorage.setItem("camping_reviews_data",json);
+}
+function change(fn,msgId){
+  fn();
+  try{
+    persist();
+    render();
+    return true;
+  }catch(e){
+    render();
+    $(msgId).textContent="용량이 가득 찼거나 저장하지 못했어요. 사진을 줄여보세요.";
+    return false;
+  }
+}
+
+function setForm(r){
+  $("name").value=r.name||"";$("place").value=r.place||"";$("date").value=r.date||"";$("date2").value=r.date2||"";$("site").value=r.site||"";
+  $("price").value=r.price==null?"":r.price;$("who").value=r.who||"";$("mapurl").value=r.map||"";$("again").value=r.again||"";
+  $("tags").value=(r.tags||[]).join(", ");$("text").value=r.text||"";
+  vals={overall:r.overall||0,clean:r.clean||0,facility:r.facility||0,nature:r.nature||0,value:r.value||0};
+  FAC.forEach(function(f){var c=$("fac_"+f[0]);c.checked=(r.fac||[]).indexOf(f[0])>-1;c.parentNode.classList.toggle("on",c.checked)});
+  pending=(r.photos||[]).map(function(p){return{data:p}});renderRates();renderPending();exps=(r.exps||[]).map(function(x){return{cat:x.cat,memo:x.memo||"",amt:x.amt}});renderExps();$("msg").textContent="";
+}
+function toForm(){tab="r";showTab();$("formcard").scrollIntoView({behavior:"smooth"})}
+function startEdit(r){editId=r.id;fromWish=null;setForm(r);$("ftitle").textContent="리뷰 수정";$("save").textContent="수정 저장";$("cancel").hidden=false;toForm()}
+function cancelEdit(){editId=null;fromWish=null;setForm({date:today()});$("ftitle").textContent="새 리뷰";$("save").textContent="리뷰 남기기";$("cancel").hidden=true}
+function wishToReview(w){cancelEdit();fromWish=w.id;$("name").value=w.name;$("place").value=w.place||"";$("mapurl").value=w.map||"";toForm()}
+
+function save(){
+  var msg=$("msg");msg.textContent="";
+  var name=$("name").value.trim();
+  if(!name){msg.textContent="캠핑장 이름을 입력해주세요.";return}
+  if(!vals.overall){msg.textContent="전체 만족도 별점을 선택해주세요.";return}
+  if($("date2").value&&$("date2").value<$("date").value){msg.textContent="체크아웃은 체크인 이후 날짜로 입력해주세요.";return}
+  var old=editId&&reviews.filter(function(x){return x.id===editId})[0],now=Date.now(),pr=$("price").value;
+  var r={id:old?old.id:"r"+now,created:old?old.created:now,name:name,place:$("place").value.trim(),date:$("date").value,date2:$("date2").value,exps:exps.filter(function(x){return Number(x.amt)>0}).map(function(x){return{cat:x.cat,memo:(x.memo||"").trim(),amt:Number(x.amt)}}),
+    site:$("site").value.trim(),price:pr===""?"":Number(pr),who:$("who").value,map:$("mapurl").value.trim(),again:$("again").value,
+    fac:FAC.map(function(f){return f[0]}).filter(function(k){return $("fac_"+k).checked}),
+    overall:vals.overall,clean:vals.clean,facility:vals.facility,nature:vals.nature,value:vals.value,
+    tags:$("tags").value.split(",").map(function(t){return t.trim().replace(/^#/,"")}).filter(Boolean).slice(0,8),
+    text:$("text").value.trim(),photos:pending.map(function(p){return p.data})};
+  
+  var ok=change(function(){
+    reviews=old?reviews.map(function(x){return x.id===old.id?r:x}):reviews.concat([r]);
+    if(fromWish)wishes=wishes.filter(function(w){return w.id!==fromWish})},"msg");
+  if(ok){cancelEdit()}
+}
+function addWish(){
+  var n=$("wname").value.trim(),m=$("wmsg");m.textContent="";
+  if(!n){m.textContent="캠핑장 이름을 입력해주세요.";return}
+  var w={id:"w"+Date.now(),name:n,place:$("wplace").value.trim(),map:$("wmap").value.trim(),memo:$("wmemo").value.trim()};
+  var ok=change(function(){wishes=wishes.concat([w])},"wmsg");
+  if(ok){$("wname").value="";$("wplace").value="";$("wmap").value="";$("wmemo").value=""}
+}
+
+function expSum(){var t=exps.reduce(function(a,x){return a+(Number(x.amt)||0)},0),n=0,d1=$("date").value,d2=$("date2").value;
+  if(d1&&d2){n=Math.round((Date.parse(d2)-Date.parse(d1))/864e5);if(n<0)n=0}
+  var p=$("price").value,lg=p===""?0:Number(p)*(n||1);
+  $("expsum").textContent=(lg||t)?"숙박비 "+won(lg)+" + 지출 "+won(t)+" = 합계 "+won(lg+t):""}
+function renderExps(){var box=$("exps");box.textContent="";
+  exps.forEach(function(x,i){var row=el("div","ex"),s=el("select");
+    EXC.forEach(function(c){var o=el("option",null,c);o.value=c;s.appendChild(o)});s.value=x.cat;s.onchange=function(){x.cat=s.value};
+    var m=el("input");m.placeholder="메모 (선택)";m.maxLength=30;m.value=x.memo||"";m.oninput=function(){x.memo=m.value};
+    var a=el("input","amt");a.type="number";a.min="0";a.inputMode="numeric";a.placeholder="금액(원)";a.value=(x.amt===""||x.amt==null)?"":x.amt;a.oninput=function(){x.amt=a.value;expSum()};
+    var d=el("button","btn ghost","×");d.type="button";d.setAttribute("aria-label","지출 삭제");d.onclick=function(){exps.splice(i,1);renderExps()};
+    row.appendChild(s);row.appendChild(m);row.appendChild(a);row.appendChild(d);box.appendChild(row)});
+  expSum()}
+function shrink(file){return new Promise(function(res,rej){
+  var fr=new FileReader();fr.onerror=function(){rej()};
+  fr.onload=function(){var im=new Image();
+    im.onload=function(){var s=Math.min(1,1200/Math.max(im.width,im.height));
+      var cv=document.createElement("canvas");cv.width=Math.round(im.width*s);cv.height=Math.round(im.height*s);
+      cv.getContext("2d").drawImage(im,0,0,cv.width,cv.height);res({data:cv.toDataURL("image/jpeg",0.72)})};
+    im.onerror=function(){rej()};im.src=fr.result};
+  fr.readAsDataURL(file)})}
+function renderPending(){var box=$("previews");box.textContent="";
+  pending.forEach(function(p,i){var w=el("div","pv"),im=el("img");im.src=p.data;im.alt="선택한 사진";
+    var x=el("button",null,"×");x.type="button";x.setAttribute("aria-label","사진 제거");
+    x.onclick=function(){pending.splice(i,1);renderPending()};w.appendChild(im);w.appendChild(x);box.appendChild(w)})}
+$("photos").onchange=async function(e){
+  var files=Array.prototype.slice.call(e.target.files||[]);e.target.value="";
+  for(var i=0;i<files.length&&pending.length<4;i++){
+    try{pending.push(await shrink(files[i]))}catch(err){$("msg").textContent="사진을 불러오지 못했어요."}}
+  renderPending()};
+
+function showTab(){
+  ["r","w","s"].forEach(function(k){$("t"+k).hidden=k!==tab});
+  document.querySelectorAll(".tabs button").forEach(function(b){b.classList.toggle("on",b.dataset.t===tab)})}
+document.querySelectorAll(".tabs button").forEach(function(b){b.onclick=function(){tab=b.dataset.t;showTab()}});
+
+GROUPS.forEach(function(g){$("fac").appendChild(el("div","fg",g[0]));var w=el("div");
+  g[1].forEach(function(f){var l=el("label","ck"),i=el("input");i.type="checkbox";i.id="fac_"+f[0];i.onchange=function(){l.classList.toggle("on",i.checked)};l.appendChild(i);l.appendChild(document.createTextNode(f[1]));w.appendChild(l)});$("fac").appendChild(w)});
+$("save").onclick=save;$("cancel").onclick=cancelEdit;$("wadd").onclick=addWish;
+$("addexp").onclick=function(){exps.push({cat:EXC[0],memo:"",amt:""});renderExps()};
+["date","date2","price"].forEach(function(id){$(id).oninput=expSum});
+["sort","fp","ft","fs","fa","ff"].forEach(function(id){$(id).onchange=renderList});$("q").oninput=renderList;
+$("date").value=today();renderRates();renderExps();
+
+(function(){
+  try{
+    var raw=localStorage.getItem("camping_reviews_data");
+    if(raw){var d=JSON.parse(raw);reviews=d.reviews||[];wishes=d.wishes||[]}
+  }catch(e){}
+  buildFilters();render();
+  $("mode").textContent="💡 브라우저 로컬 저장소 모드 (현재 브라우저에 안전하게 보관됩니다)";
+})();
+})();
+</script>
+</body>
+</html>
